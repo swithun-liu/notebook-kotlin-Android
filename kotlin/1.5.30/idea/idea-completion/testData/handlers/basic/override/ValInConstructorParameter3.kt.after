@@ -1,0 +1,8 @@
+// FIR_COMPARISON
+interface I {
+    val p: Int
+}
+
+class CCCC(override val p: Int<caret>val x: Int) : I
+
+// ELEMENT_TEXT: "override val p: Int"

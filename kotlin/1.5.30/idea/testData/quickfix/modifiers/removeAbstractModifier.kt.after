@@ -1,0 +1,7 @@
+// "Make 'abstract()' not abstract" "true"
+
+class A() {
+
+}
+
+/* IGNORE_FIR */

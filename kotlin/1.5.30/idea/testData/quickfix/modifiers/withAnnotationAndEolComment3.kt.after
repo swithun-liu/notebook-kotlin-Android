@@ -1,0 +1,7 @@
+// "Remove 'final' modifier" "true"
+
+class A @Deprecated("") // ds
+constructor() {
+
+}
+/* IGNORE_FIR */
