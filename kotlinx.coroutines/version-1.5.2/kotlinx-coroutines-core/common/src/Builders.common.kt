@@ -44,12 +44,38 @@ import kotlin.jvm.*
  * @param start coroutine start option. The default value is [CoroutineStart.DEFAULT].
  * @param block the coroutine code which will be invoked in the context of the provided scope.
  **/
+
+/**
+ * swithun-note
+ * 启动一个新的协程，不阻塞当前线程，返回一个Job对象(协程的引用)
+ * 当返回的Job对象被取消时，协程也会被取消
+ * 
+ * 协程的上下文环境是从CoroutineScope继承的，可以通过context参数指定其他的上下文元素。
+ * 如果上下文中没有任何的调度器或者其他的ContinuationInterceptor，那么默认的调度器就是[Dispatchers.Default]。
+ * 父Job是从CoroutineScope继承的，也可以通过context参数指定其他的上下文元素。
+ * 
+ * 默认情况下，协程立即被调度执行。
+ * 其他的启动选项可以通过start参数指定。见[CoroutineStart]。
+ * 一个可选的start参数可以设置为[CoroutineStart.LAZY]，这样协程的Job对象就是在_new_状态。
+ * 可以通过[start][Job.start]函数手动启动协程，并且会在第一次调用[join][Job.join]时被自动启动。
+ * 
+ * 在协程中抛出的异常会导致父Job被取消，除非指定了CoroutineExceptionHandler，这样当launch被用在另一个协程的上下文中时，
+ * 协程中抛出的异常会导致父协程被取消。
+ * 
+ * 请参阅[newCoroutineContext]以了解创建新协程的调试功能。
+ * 
+ * @param context 在协程的上下文中添加的其他上下文元素。
+ * @param start 协程的启动选项。默认值是[CoroutineStart.DEFAULT]。
+ * @param block 协程的代码。
+ */
 public fun CoroutineScope.launch(
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
+    // swithun-note 将协程的上下文环境和父Job(context)组合在一起
     val newContext = newCoroutineContext(context)
+    // swithun-note 创建一个新的协程，start不是isLazy则直接start协程
     val coroutine = if (start.isLazy)
         LazyStandaloneCoroutine(newContext, block) else
         StandaloneCoroutine(newContext, active = true)

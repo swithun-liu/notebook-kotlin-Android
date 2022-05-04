@@ -14,8 +14,14 @@ import kotlin.coroutines.jvm.internal.CoroutineStackFrame
  * and copyable-thread-local facilities on JVM.
  * See [DEBUG_PROPERTY_NAME] for description of debugging facilities on JVM.
  */
+/**
+ * swithun-note
+ * 创建一个新的协程上下文。它安装[Dispatchers.Default]，当没有其他的调度器或[ContinuationInterceptor]时，并且添加可调试的功能（当开启时）和可复制的线程本地功能。
+ * 参阅[DEBUG_PROPERTY_NAME]以获取JVM上的调试功能的描述。
+ */
 @ExperimentalCoroutinesApi
 public actual fun CoroutineScope.newCoroutineContext(context: CoroutineContext): CoroutineContext {
+    // swithun-note 将CoroutineScope中的courtineContext和context合并，即coroutineContext + context
     val combined = foldCopies(coroutineContext, context, true)
     val debug = if (DEBUG) combined + CoroutineId(COROUTINE_ID.incrementAndGet()) else combined
     return if (combined !== Dispatchers.Default && combined[ContinuationInterceptor] == null)
