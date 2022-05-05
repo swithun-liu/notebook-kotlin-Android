@@ -74,6 +74,18 @@ import java.util.Objects;
  * <strong>Note:</strong> This class is <strong>not</strong> thread-safe and a given
  * instance should only be accessed by a single thread.
  */
+
+ /**
+  * swithun-note
+  * 实例化布局文件到对应的View对象。不直接使用。
+  * 而是通过Activity的getLayoutInflater()或者Context的getSystemService()方法来获取一个标准的LayoutInflater实例(已经连接到当前context并且正确地被设备设置)。
+  * 
+  * 可以通过cloneInContext()方法来创建一个新的LayoutInflater实例，然后调用setFactory()方法来包含自己的Factory。
+  * 
+  * 由于性能原因，view inflation非常依赖于XML文件的预处理。所以当运行时不能使用LayoutInflater与XmlPullParser进行XML文件的运行时解析；而是只能使用XmlPullParser返回的编译资源(R.<em>something</em>文件)。
+  * 
+  * <strong>注意：</strong>这个类是<strong>不是</strong>线程安全的，并且每个实例只能被一个线程访问。
+  */
 @SystemService(Context.LAYOUT_INFLATER_SERVICE)
 public abstract class LayoutInflater {
 
@@ -276,6 +288,10 @@ public abstract class LayoutInflater {
 
     /**
      * Obtains the LayoutInflater from the given context.
+     */
+    /**
+     * swithun-note
+     * 从给定的context中获取LayoutInflater
      */
     public static LayoutInflater from(Context context) {
         LayoutInflater LayoutInflater =
@@ -623,6 +639,17 @@ public abstract class LayoutInflater {
      * @return The root View of the inflated hierarchy. If root was supplied and
      *         attachToRoot is true, this is root; otherwise it is the root of
      *         the inflated XML file.
+     */
+    /**
+     * swithun-note
+     * 从XML节点中加载View hierarchy。
+     * 
+     * 重要提示：为了提高性能，在编译时，View加载器将严格依赖于XML文件的预处理。所以目前不能在运行时使用LayoutInflater与XmlPullParser连接一个纯XML文件。
+     * 
+     * @param parser 包含View hierarchy的XML节点。
+     * @param root 可选的View作为父级视图（如果attachToRoot为true），或者只是一个提供了LayoutParams值的对象（如果attachToRoot为false）。
+     * @param attachToRoot 是否将加载的View hierarchy附加到root参数？如果为false，则root只用于创建XML文件中的根视图的正确子类型的LayoutParams。
+     * @return 加载的View hierarchy的根视图。如果attachToRoot为true，则返回root；否则返回加载的XML文件的根视图。
      */
     public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
         synchronized (mConstructorArgs) {
