@@ -78,15 +78,20 @@ import kotlin.coroutines.intrinsics.*
 public interface CoroutineScope {
     /**
      * The context of this scope.
-     * scope的context
      * Context is encapsulated by the scope and used for implementation of coroutine builders that are extensions on the scope.
-     * context被scope封装，用于实现作为scope的扩展的coroutine builder
      * Accessing this property in general code is not recommended for any purposes except accessing the [Job] instance for advanced usages.
-     * 访问这个属性的一般代码不建议任何用途除了访问Job实例以进行高级用途
      * 
      * By convention, should contain an instance of a [job][Job] to enforce structured concurrency.
-     * 通常情况下，应该包含一个[job][Job]实例来强制结构化并发
      *
+     */
+
+    /**
+     * swithun-note
+     * scope的context
+     * context被scope封装，用于实现作为scope的扩展的coroutine builder
+     * 访问这个属性的一般代码不建议任何用途除了访问Job实例以进行高级用途
+     * 
+     * 通常情况下，应该包含一个[job][Job]实例来强制结构化并发
      */
     public val coroutineContext: CoroutineContext
 }
