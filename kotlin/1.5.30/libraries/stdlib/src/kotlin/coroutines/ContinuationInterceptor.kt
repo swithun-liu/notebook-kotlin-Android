@@ -16,6 +16,17 @@ package kotlin.coroutines
  * [ContinuationInterceptor] subtypes can be extracted from the coroutine context using either [ContinuationInterceptor.Key]
  * or subtype key if it extends [AbstractCoroutineContextKey].
  */
+/**
+ * swithun-note
+ * 标记拦截coroutine continuations 的 coroutin context element，。
+ * coroutines framework 使用 [ContinuationInterceptor.Key] 来获取拦截器，并且使用 [interceptContinuation] 来拦截所有的 coroutine continuations。
+ * 
+ * [ContinuationInterceptor] 像一个 [polymorphic elemen（多态元素）][AbstractCoroutineContextKey]，
+ * 意味着它的实现将委托 [get][CoroutineContext.Element.get] 和 [minusKey][CoroutineContext.Element.minusKey] 
+ *                  到 [getPolymorphicElement] 和 [minusPolymorphicKey] 对应的方法。
+ * [ContinuationInterceptor] 子类型可以使用 [ContinuationInterceptor.Key] 或者子类型 key(继承与 [AbstractCoroutineContextKey])
+ * 从 coroutine context 中提取。
+ */
 @SinceKotlin("1.3")
 public interface ContinuationInterceptor : CoroutineContext.Element {
     /**

@@ -13,10 +13,18 @@ import kotlin.coroutines.*
 /**
  * Name of the property that defines the maximal number of threads that are used by [Dispatchers.IO] coroutines dispatcher.
  */
+/**
+ * swithun-note
+ * 定义了最大的被[Dispatchers.IO]协程调度器使用的线程数量的属性名称。
+ */
 public const val IO_PARALLELISM_PROPERTY_NAME: String = "kotlinx.coroutines.io.parallelism"
 
 /**
  * Groups various implementations of [CoroutineDispatcher].
+ */
+/**
+ * swithun-note
+ * 定义了[CoroutineDispatcher]的一些实现组合。
  */
 public actual object Dispatchers {
     /**
@@ -27,6 +35,14 @@ public actual object Dispatchers {
      * It is backed by a shared pool of threads on JVM. By default, the maximal level of parallelism used
      * by this dispatcher is equal to the number of CPU cores, but is at least two.
      * Level of parallelism X guarantees that no more than X tasks can be executed in this dispatcher in parallel.
+     */
+    /**
+     * swithun-note
+     * 定义了所有标准构建器（如[launch][CoroutineScope.launch]，[async][CoroutineScope.async]等）的默认[CoroutineDispatcher]。
+     * 如果在他们的上下文中没有指定任何[ContinuationInterceptor]，则它将被[Dispatchers.Default]使用。
+     * 
+     * 它由 JVM 上的一个共享线程池支持。默认情况下，该调度器使用的最大并发级别等于 CPU 核心数，但至少为 2。
+     * 并发级别 X 确保不超过 X 个任务可以在该调度器中并发执行。
      */
     @JvmStatic
     public actual val Default: CoroutineDispatcher = DefaultScheduler
@@ -52,6 +68,27 @@ public actual object Dispatchers {
      * project test dependencies.
      *
      * Implementation note: [MainCoroutineDispatcher.immediate] is not supported on Native and JS platforms.
+     */
+    /**
+     * swithun-note
+     * 仅限于主线程操作UI对象使用的协程调度器。
+     * 这个调度器可以直接使用或通过[MainScope]工厂使用。
+     * 通常，这个调度器是单线程的。
+     * 
+     * 访问该属性可能会抛出[IllegalStateException]，如果没有main thread dispatchers在类路径中。
+     * 
+     * 根据平台和类路径，它可以映射到不同的调度器：
+     * - 在JS和Native平台上，它是[Default]调度器的相同。
+     * - 在JVM上，它是 Android的 main thread dispatcher，JavaFx或Swing EDT调度器。它是由[`ServiceLoader`](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html)选择的。
+     * 
+     * 为了使用`Main`调度器，需要将以下项目运行时依赖添加到项目：
+     * - `kotlinx-coroutines-android`，用于Android Main thread dispatcher
+     * - `kotlinx-coroutines-javafx`，用于JavaFx Application thread dispatcher
+     * - `kotlinx-coroutines-swing`，用于Swing EDT调度器
+     * 
+     * 为了设置一个自定义的 `Main` 调度器，添加`kotlinx-coroutines-test`到项目测试依赖。
+     * 
+     * 实现注意：[MainCoroutineDispatcher.immediate]不支持Native和JS平台。
      */
     @JvmStatic
     public actual val Main: MainCoroutineDispatcher get() = MainDispatcherLoader.dispatcher
@@ -130,6 +167,38 @@ public actual object Dispatchers {
      * As a result of thread sharing, more than 64 (default parallelism) threads can be created (but not used)
      * during operations over IO dispatcher.
      */
+    /**
+     * swithun-note
+     * 设计用来转移IO任务到一个共享的线程池中的 [CoroutineDispatcher]。
+     * 
+     * 这个pool中的额外的thread按需创建和关闭。
+     * 这个dispatcher中的任务的线程数量由"`kotlinx.coroutines.io.parallelism`"（[IO_PARALLELISM_PROPERTY_NAME])系统属性决定。
+     * 默认值是64个thread或者是cpu的数量（以较大者为准）。
+     * 
+     * ### 有限并行度的 elasticity (弹性)
+     * 
+     * `Dispatchers.IO` 有一个独有的 elasticity 属性: 
+     * 通过 [CoroutineDispatcher.limitedParallelism] 获得的 views 不会被 `Dispatchers.IO` 的并行度限制。 
+     * 概念上，有一个由无限制的线程池支持的dispatcher，而且 `Dispatchers.IO` 和 `Dispatchers.IO` 的 views 都是这个dispatcher的 views。
+     * 实际上，这意味着，即使不遵守 `Dispatchers.IO` 的并行度限制，它的 views 和 `Dispatchers.IO` 共享线程和资源。
+     * 
+     * 在下面的例子中，
+     * ```
+     * // 100 threads for MySQL connection
+     * val myMysqlDbDispatcher = Dispatchers.IO.limitedParallelism(100)
+     * // 60 threads for MongoDB connection
+     * val myMongoDbDispatcher = Dispatchers.IO.limitedParallelism(60)
+     * ```
+     * 系统kennel可能会有超过 `64 + 100 + 60` 个线程在高峰负载时被投入给阻塞任务，
+     * 但是在它的稳定状态下，只有一小部分线程在 `Dispatchers.IO`、`myMysqlDbDispatcher` 和 `myMongoDbDispatcher` 之间共享。
+     * 
+     * ### 实现注意
+     * 
+     * 这个dispatcher和它的views共享线程，所以使用 `withContext(Dispatchers.IO) { ... }` 在已经在 [Default][Dispatchers.Default]
+     * dispatcher 上运行时，不会真正切换到另一个线程，而是继续在同一个线程运行。
+     * 因为线程共享，在IO dispatcher上运行的任务可能会创建超过64（默认并行度）个线程。
+     */
+
     @JvmStatic
     public val IO: CoroutineDispatcher = DefaultIoScheduler
 
