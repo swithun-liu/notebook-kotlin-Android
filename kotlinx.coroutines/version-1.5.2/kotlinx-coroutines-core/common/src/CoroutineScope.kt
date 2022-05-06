@@ -75,6 +75,64 @@ import kotlin.coroutines.intrinsics.*
  * }
  * ```
  */
+
+ /**
+ * swithun-note
+ * 定义一个新的协程作用域。每个**协程构建器**（如[launch], [async], 等）都是[CoroutineScope]的扩展，
+ * 它继承了它的[coroutineContext][CoroutineScope.coroutineContext]，以自动传播所有的元素和取消。
+ * 
+ * 获取一个独立的scope的实例的最好方式是[CoroutineScope]和[MainScope]工厂函数，
+ * 注意要在不再需要的时候取消它们。（见下面的解释和示例）。
+ * 
+ * 额外的context elements可以通过使用[plus][CoroutineScope.plus]运算符来附加到作用域。
+ * 
+ * ### 常见的结构化并发
+ * 手动实现这个接口是不推荐的，实现代理更好。
+ * 为了方便起见，[context of scope][CoroutineScope.coroutineContext]应该包含一个[job][Job]实例来强制结构化并发从而可以传播取消。
+ * 
+ * 每个coroutine builder（如[launch], [async], 等）和每个scoping函数（如[coroutineScope]和[withContext]) 都提供了自己的scope 以及 它们自己的[Job]实例 给 内部代码块。
+ * 根据惯例，它们都等待所有在它们的块内部运行的coroutines完成之后才完成自己。
+ * 这样就强制了结构化并发。见[Job]文档以获取更多详情。
+ * 
+ * ### Android的使用
+ * Android在所有有lifecycle的实体中都有第三方的coroutine scope支持。
+ * 见[相应的文档](https://developer.android.com/topic/libraries/architecture/coroutines#lifecyclescope)。
+ * 
+ * ### 自定义使用
+ * `CoroutineScope`应该被定义为有定义明确的负责launch子coroutine的生命周期的实体的属性。
+ * 相应的实例应该是由`CoroutineScope()`或`MainScope()`函数创建的。
+ * 它们的区别只在[CoroutineDispatcher]上。
+ * 
+ * * `CoroutineScope()`给他的coroutines使用[Dispatchers.Default]。
+ * * `MainScope()`给他的coroutines使用[Dispatchers.Main]。
+ * 
+ * **对于`CustomScope`的自定义使用，关键是在生命周期结束时取消它。**
+ * [CoroutineScope.cancel]扩展函数应该被用来取消实体，它会取消所有在它身上启动的coroutines。
+ * 
+ * 例如：
+ * 
+ * ```
+ * class MyUIClass {
+ *     val scope = MainScope() // the scope of MyUIClass, uses Dispatchers.Main
+ *
+ *     fun destroy() { // destroys an instance of MyUIClass
+ *         scope.cancel() // cancels all coroutines launched in this scope
+ *         // ... do the rest of cleanup here ...
+ *     }
+ *
+ *     /*
+ *      * Note: if this instance is destroyed or any of the launched coroutines
+ *      * in this method throws an exception, then all nested coroutines are cancelled.
+ *      */
+ *     fun showSomeData() = scope.launch { // launched in the main thread
+ *        // ... here we can use suspending functions or coroutine builders with other dispatchers
+ *        draw(data) // draw in the main thread
+ *     }
+ * }
+ * ```
+  */
+
+
 public interface CoroutineScope {
     /**
      * The context of this scope.
