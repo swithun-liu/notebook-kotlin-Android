@@ -14,6 +14,15 @@ package kotlinx.coroutines
  * **The `CompletableJob` interface is not stable for inheritance in 3rd party libraries**,
  * as new methods might be added to this interface in the future, but is stable for use.
  */
+/**
+ * swithun-note
+ * 一个能被通过调用[complete()]完成的job。
+ * 它是[Job()][Job]和[SupervisorJob()][SupervisorJob]构造函数返回的。
+ * 
+ * 这个借口的所有函数是 **线程安全**的，并且可以无需外部同步的情况下被并发的协程调用。
+ * 
+ * **对于第三方库得继承来说，`CompletableJob`是不稳定的，因为可能回增加新的方法，但是对于使用来说是稳定的**。
+ */
 public interface CompletableJob : Job {
     /**
      * Completes this job. The result is `true` if this job was completed as a result of this invocation and

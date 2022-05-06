@@ -24,6 +24,14 @@ import kotlin.native.concurrent.*
  * @param active when `true` the job is created in _active_ state, when `false` in _new_ state. See [Job] for details.
  * @suppress **This is unstable API and it is subject to change.**
  */
+/**
+ * swithun-note
+ * 一个具体的实现 [Job]。它可以是一个子任务。
+ * 
+ * 这是一个开放类，为了扩展更具体的类，可以增加完成任务的状态和状态信息，例如结果值。
+ * 
+ * @param active 当 `true` 时，任务创建为 _active_ 状态，当 `false` 时为 _new_ 状态。详见 [Job]。  
+ */
 @Deprecated(level = DeprecationLevel.ERROR, message = "This is internal API and may be removed in the future releases")
 public open class JobSupport constructor(active: Boolean) : Job, ChildJob, ParentJob, SelectClause0 {
     final override val key: CoroutineContext.Key<*> get() = Job
