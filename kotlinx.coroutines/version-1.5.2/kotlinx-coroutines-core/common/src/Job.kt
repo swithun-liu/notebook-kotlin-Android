@@ -402,6 +402,10 @@ public fun interface DisposableHandle {
  *
  * @suppress **This is unstable API and it is subject to change.**
  */
+/**
+ * swithun-note
+ * parent从它的child接受到的引用，以便它可以报告它的取消。
+ */
 @InternalCoroutinesApi
 @Deprecated(level = DeprecationLevel.ERROR, message = "This is internal API and may be removed in the future releases")
 public interface ChildJob : Job {
@@ -420,6 +424,10 @@ public interface ChildJob : Job {
  * A reference that child receives from its parent when it is being cancelled by the parent.
  *
  * @suppress **This is unstable API and it is subject to change.**
+ */
+/**
+ * swithun-note
+ * 当child被parent取消时从它的parent接受到的引用。
  */
 @InternalCoroutinesApi
 @Deprecated(level = DeprecationLevel.ERROR, message = "This is internal API and may be removed in the future releases")
