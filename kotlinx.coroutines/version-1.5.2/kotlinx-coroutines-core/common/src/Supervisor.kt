@@ -29,6 +29,22 @@ import kotlin.jvm.*
  *
  * @param parent an optional parent job.
  */
+
+/**
+ * swithun-note
+ * 创建一个_supervisor_job 对象在活动状态。
+ * supervisor job的子job可以失败独立于其他子job。
+ * 
+ * 一个child的失败不会导致supervisor job失败，并切不影响其他的children，所以supervisor可以实现自定义处理子job的失败：
+ * 
+ * * 一个使用[launch][CoroutineScope.launch]创建的child job失败可以通过[CoroutineExceptionHandler]在上下文中处理。
+ * * 一个使用[async][CoroutineScope.async]创建的child job失败可以通过[Deferred.await]获取到产生的deferred值。
+ * 
+ * 如果制定了[parent] job，那么这个supervisor job会成为其父job的子job，当其父job失败或被取消时，这个supervisor job(包括他的子job)也会被取消。
+ * 带有exception(除了[CancellationException])的[cancel][Job.cancel]调用也会取消父job。
+ * 
+ * @param parent 一个可选的父job。
+ */
 @Suppress("FunctionName")
 public fun SupervisorJob(parent: Job? = null) : CompletableJob = SupervisorJobImpl(parent)
 

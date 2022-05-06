@@ -60,6 +60,10 @@ public interface CoroutineContext {
                      */
                     val interceptor = removed[ContinuationInterceptor]
                     if (interceptor == null) CombinedContext(removed, element) else {
+                        /**
+                         * swithun-note
+                         * CombinedContext 见 文件 CoroutineContextImpl.kt [CombinedContext]
+                         */
                         val left = removed.minusKey(ContinuationInterceptor)
                         if (left === EmptyCoroutineContext) CombinedContext(element, interceptor) else
                             CombinedContext(CombinedContext(left, element), interceptor)
