@@ -11,6 +11,10 @@ import kotlin.coroutines.CoroutineContext.Key
 /**
  * Base class for [CoroutineContext.Element] implementations.
  */
+/**
+ * swithun-note
+ * [CoroutineContext.Element] 实现类的基类
+ */
 @SinceKotlin("1.3")
 public abstract class AbstractCoroutineContextElement(public override val key: Key<*>) : Element
 
@@ -108,6 +112,12 @@ public object EmptyCoroutineContext : CoroutineContext, Serializable {
 
 // this class is not exposed, but is hidden inside implementations
 // this is a left-biased list, so that `plus` works naturally
+
+/**
+ * swithun-note
+ * 这个类不被公开，但是在实现中被隐藏
+ * 这是一个左偏列表，所以 `plus` 自然地工作
+ */
 @SinceKotlin("1.3")
 internal class CombinedContext(
     private val left: CoroutineContext,

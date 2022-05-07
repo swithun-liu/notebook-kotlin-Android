@@ -56,7 +56,7 @@ public interface CoroutineContext {
                     // make sure interceptor is always last in the context (and thus is fast to get when present)
                     /**
                      * swithun-note
-                     * 需要保证interceptor是context的最后一个element，因为这样才能快速获取。
+                     * 需要保证interceptor是context的最后一个element，这样当它存在时可以快速获取。
                      */
                     val interceptor = removed[ContinuationInterceptor]
                     if (interceptor == null) CombinedContext(removed, element) else {
