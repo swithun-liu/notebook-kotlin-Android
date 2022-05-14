@@ -45,6 +45,11 @@ public interface ContinuationInterceptor : CoroutineContext.Element {
      * with the resulting continuation if it was intercepted, that is if `interceptContinuation` had previously
      * returned a different continuation instance.
      */
+    /**
+     * swithun-note
+     * 返回一个包装了原始 [continuation] 的 continuation，因此拦截所有的 resumptions。
+     * 这个方法在需要时被 coroutines framework 调用，并且结果的 continuation 被缓存在每个原始 [continuation] 的实例中。
+     */
     public fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T>
 
     /**

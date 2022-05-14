@@ -5,6 +5,12 @@
 
 package kotlin.coroutines
 
+/**
+ * swithun-note
+ * - jvm
+ *   - kotlin/1.5.30/libraries/stdlib/jvm/src/kotlin/coroutines/SafeContinuationJvm.kt
+ */
+
 @PublishedApi
 @SinceKotlin("1.3")
 internal expect class SafeContinuation<in T> : Continuation<T> {

@@ -10,6 +10,11 @@ import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 
 /**
+ * swithun-note
+ * - kotlin/1.5.30/libraries/stdlib/jvm/src/kotlin/coroutines/intrinsics/IntrinsicsJvm.kt
+ */
+
+/**
  * Starts an unintercepted coroutine without a receiver and with result type [T] and executes it until its first suspension.
  * Returns the result of the coroutine or throws its exception if it does not suspend or [COROUTINE_SUSPENDED] if it suspends.
  * In the latter case, the [completion] continuation is invoked when the coroutine completes with a result or an exception.

@@ -136,6 +136,12 @@ public abstract class CoroutineDispatcher :
      * This method should generally be exception-safe. An exception thrown from this method
      * may leave the coroutines that use this dispatcher in the inconsistent and hard to debug state.
      */
+    /**
+     * swithun-note
+     * 返回一个包裹着 provided [continuation] 的 continuation，这样就会拦截所有的恢复。
+     *
+     * 这个方法通常是异常安全的。如果这个方法抛出异常，那么这个调度器的所有协程都会变成不可调试的状态。
+     */
     public final override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =
         DispatchedContinuation(this, continuation)
 

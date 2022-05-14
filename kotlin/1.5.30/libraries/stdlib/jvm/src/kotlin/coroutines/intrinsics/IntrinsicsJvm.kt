@@ -80,6 +80,25 @@ internal actual inline fun <R, P, T> (suspend R.(P) -> T).startCoroutineUninterc
  * Repeated invocation of any resume function on the resulting continuation corrupts the
  * state machine of the coroutine and may result in arbitrary behaviour or exception.
  */
+/**
+ * swithun-note
+ * 创建一个没有receiver但是有返回类型[T]的未拦截的coroutine。
+ * 这个函数会创建一个新的，每次调用都是新的suspendable computation。
+ *
+ * 要开始执行创建的coroutine，调用`resume(Unit)`在返回的[Continuation]实例上。
+ * 当coroutine完成时，continuation[completion]会被调用。
+ *
+ * 这个函数返回未拦截的continuation。
+ * 调用`resume(Unit)`会立即在调用者的调用栈上开始coroutine，
+ * 而不会通过可能在completion的[CoroutineContext]中的[ContinuationInterceptor]。
+ * 调用者必须确保设置了一个适当的调用上下文。
+ *
+ * [Continuation.intercepted]可以用来获取intercepted continuation。
+ * 在intercepted continuation上调用`resume(Unit)`确保coroutine和completion发生在
+ * 由[ContinuationInterceptor]建立的调用context中。
+ *
+ * 任何在返回的continuation上重复的resume方法的调用 会 导致 coroutine 状态机被破坏以及可能会导致未知行为或异常。
+ */
 @SinceKotlin("1.3")
 public actual fun <T> (suspend () -> T).createCoroutineUnintercepted(
     completion: Continuation<T>
@@ -137,6 +156,16 @@ public actual fun <R, T> (suspend R.() -> T).createCoroutineUnintercepted(
  * invokes [ContinuationInterceptor.interceptContinuation], caches and returns the result.
  *
  * If this function is invoked on other [Continuation] instances it returns `this` continuation unchanged.
+ */
+/**
+ * swithun-note
+ * 使用[ContinuationInterceptor]拦截continuation
+ *
+ * 这个函数应该被用于[createCoroutineUnintercepted]或[suspendCoroutineUninterceptedOrReturn]的直接结果，
+ * 在这种情况下，它检查continuation的[context][Continuation.context]中是否有[ContinuationInterceptor]，
+ * 调用[ContinuationInterceptor.interceptContinuation]并缓存结果。
+ *
+ * 如果这个函数被调用于其他[Continuation]实例，它将返回`this` continuation不变。
  */
 @SinceKotlin("1.3")
 public actual fun <T> Continuation<T>.intercepted(): Continuation<T> =

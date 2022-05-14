@@ -12,16 +12,28 @@ import kotlin.internal.InlineOnly
 /**
  * Interface representing a continuation after a suspension point that returns a value of type `T`.
  */
+/**
+ * swithun-note
+ * 表示一个挂起点后的继续，返回值类型为 `T` 的继续。
+ */
 @SinceKotlin("1.3")
 public interface Continuation<in T> {
     /**
      * The context of the coroutine that corresponds to this continuation.
+     */
+    /**
+     * swithun-note
+     * 对应于此继续的协程的上下文。
      */
     public val context: CoroutineContext
 
     /**
      * Resumes the execution of the corresponding coroutine passing a successful or failed [result] as the
      * return value of the last suspension point.
+     */
+    /**
+     * swithun-note
+     * 恢复执行对应的协程，传递一个成功或失败的 [result] 作为最后一个挂起点的返回值。
      */
     public fun resumeWith(result: Result<T>)
 }
@@ -34,6 +46,7 @@ public interface Continuation<in T> {
 @SinceKotlin("1.3")
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
+
 public annotation class RestrictsSuspension
 
 /**
@@ -78,6 +91,18 @@ public inline fun <T> Continuation(
  * To start executing the created coroutine, invoke `resume(Unit)` on the returned [Continuation] instance.
  * The [completion] continuation is invoked when the coroutine completes with a result or an exception.
  * Subsequent invocation of any resume function on the resulting continuation will produce an [IllegalStateException].
+ */
+/**
+ * swithun-note
+ * 创建一个没有接收者的coroutine, 结果类型为 `T`。
+ * 这个函数每次调用都会创建一个新的可以被挂起的计算的实例。
+ *
+ * 调用返回的Continuation实例的 `resume(Unit)` 可以开始执行创建的coroutine。
+ * 当协程带有一个结果完成 或者 发生异常 时， [completion] continuation 会被调用。
+ * 之后，在这个返回的continuation上任何的resume方法的调用都会产生一个 [IllegalStateException]。
+ *
+ * createCoroutineUnintercepted -> [kotlin/1.5.30/libraries/stdlib/src/kotlin/coroutines/CoroutinesIntrinsicsH.kt]
+ * SafeContinuation -> [kotlin/1.5.30/libraries/stdlib/src/kotlin/coroutines/CoroutinesH.kt]
  */
 @SinceKotlin("1.3")
 @Suppress("UNCHECKED_CAST")
