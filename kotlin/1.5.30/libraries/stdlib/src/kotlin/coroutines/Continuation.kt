@@ -1,3 +1,6 @@
+/**
+ * [remotepath](https://github.com/swithun-liu/notebook-kotlin-Android/blob/master/kotlin/1.5.30/libraries/stdlib/src/kotlin/coroutines/Continuation.kt)
+ */
 /*
  * Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
@@ -161,6 +164,15 @@ public fun <R, T> (suspend R.() -> T).startCoroutine(
  * In this function both [Continuation.resume] and [Continuation.resumeWithException] can be used either synchronously in
  * the same stack-frame where the suspension function is run or asynchronously later in the same thread or
  * from a different thread of execution. Subsequent invocation of any resume function will produce an [IllegalStateException].
+ */
+
+/**
+ * swithun-note
+ * 获取当前suspend函数中的continuation实例，并挂起当前正在执行的coroutine。
+ * 
+ * 在这个函数中，[Continuation.resume] 和 [Continuation.resumeWithException] 可以在同一个栈帧中同步执行，
+ * 同时，suspension function 可以在任何时候被调用在同一个线程或者在不同的线程中执行。
+ * 之后的任何resume方法的调用都会产生一个 [IllegalStateException]。
  */
 @SinceKotlin("1.3")
 @InlineOnly
